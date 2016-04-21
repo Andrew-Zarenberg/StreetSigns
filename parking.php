@@ -14,6 +14,9 @@ $offsetY = 0;
 if($_GET["type"] == 2){
   $offsetY = 110;
   $height += 35;
+} else if($_GET["type"] == 3){
+  $offsetY = 400;
+  $height += 35;
 }
 
 
@@ -60,6 +63,30 @@ else if($type == 2){ // METERED PARKING
   imagefilledrectangle($im, 20, 20, 200, 190, $green);
   imagettftext($im, 140, 0, $x, 170, $white, $font, $hours);
   $textcolor = $green;
+}
+else if($type == 3){ // COMMERCIAL VEHICLES ONLY METERED PARKING
+  imagefilledrectangle($im, 10, 10, 590, $height+250, $red);
+  imagefilledrectangle($im, 20, 20, 580, $height+240, $white);
+
+  imagettftext($im, 40, 0, 230, 65, $red, $font, "hour");
+  imagettftext($im, 40, 0, 230, 125, $red, $font, "metered");
+  imagettftext($im, 40, 0, 230, 185, $red, $font, "parking");
+
+  imagettftext($im, 60, 0, 35, 300, $red, $font, "COMMERCIAL");
+  imagettftext($im, 60, 0, 35, 380, $red, $font, "VEHICLES ONLY");
+  imagettftext($im, 42, 0, 35, 480, $red, $font, "OTHERS NO STANDING");
+
+
+  $x = 60;
+  if(strlen($hours) == 2) $x -= 40;
+
+  // hour designation
+  imagefilledrectangle($im, 20, 20, 200, 190, $red);
+  imagettftext($im, 140, 0, $x, 170, $white, $font, $hours);
+  
+
+  
+  $textcolor = $red;
 }
 else { // NO PARKING (default)
   imagefilledrectangle($im, 10, 10, 590, $height+250, $red);

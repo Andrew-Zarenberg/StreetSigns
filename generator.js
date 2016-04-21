@@ -12,11 +12,11 @@ var tr_metered = document.getElementById("tr_metered");
 
 function update(){
     var url = "parking.php?type="+type.value+"&arrow="+arrow.value+"&data="+data.value.replace(/\n/g,'`');
-    if(type.value == 2) url += "&hours="+hours.value;
+    if(type.value == 2 || type.value == 3) url += "&hours="+hours.value;
     img.src = url;
     link.href = url;
 
-    tr_metered.style.display = (type.value=="2"?"":"none");
+    tr_metered.style.display = (type.value==2||type.value==3?"":"none");
 	
 }
 
@@ -38,21 +38,21 @@ function init(){
 	[1,"Monday - Friday\n7am - 10am\n4pm - 7pm"],
 
 	[2,"8:30am - 7pm\nExcept Sunday",1],
-	[2,"Monday - Friday\n6pm - Midnight\n\nSaturday\n8am - Midnight",6]
+	[2,"Monday - Friday\n6pm - Midnight\n\nSaturday\n8am - Midnight",6],
+
+	[3,"Monday - Friday\n7am - 7pm",3],
+	[3,"Monday - Friday\n7am - 6pm",3],
+	[3,"Monday - Friday\n8am - 6pm",3],
+	[3,"7am - 7pm\nExcept Sunday",3],
+	[3,"8am - 6pm\nExcept Sunday",3]
     ];
 
     var x = Math.floor(Math.random()*sin.length);
     data.value = sin[x][1];
-    if(sin[x][0] == 2){
-	hours.value = sin[x][2];
-	type.value = 2;
-    } else if(sin[x][0] == -1){
-	type.value = Math.floor((Math.random()*2));
-    }
+    if(sin[x].length == 3) hours.value = sin[x][2];
 
-
-    //type.value = Math.floor(Math.random()*2);
-    //arrow.value = Math.floor((Math.random()*3));
+    if(sin[x][0] == -1) type.value = Math.floor((Math.random()*2));
+    else type.value = sin[x][0];
 
     update();
 }
