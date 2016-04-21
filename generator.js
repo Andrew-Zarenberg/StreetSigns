@@ -7,17 +7,25 @@ var line2 = document.getElementById("line2");
 var type = document.getElementById("type");
 var arrow = document.getElementById("arrow");
 var hours = document.getElementById("hours");
+var auth = document.getElementById("auth");
 
 var tr_metered = document.getElementById("tr_metered");
+var tr_authorized = document.getElementById("tr_authorized");
 
 function update(){
-    var url = "parking.php?type="+type.value+"&arrow="+arrow.value+"&data="+data.value.replace(/\n/g,'`');
+    var d = data.value.replace(/\n/g,'`');
+
+    if(type.value == 4){
+	d = "|~"+auth.value.replace(/\n/g,"`|~")+"``"+d;
+    }
+
+    var url = "parking.php?type="+type.value+"&arrow="+arrow.value+"&data="+d
     if(type.value == 2 || type.value == 3) url += "&hours="+hours.value;
     img.src = url;
     link.href = url;
 
     tr_metered.style.display = (type.value==2||type.value==3?"":"none");
-	
+    tr_authorized.style.display = (type.value==4?"":"none");
 }
 
 
@@ -44,12 +52,18 @@ function init(){
 	[3,"Monday - Friday\n7am - 6pm",3],
 	[3,"Monday - Friday\n8am - 6pm",3],
 	[3,"7am - 7pm\nExcept Sunday",3],
-	[3,"8am - 6pm\nExcept Sunday",3]
+	[3,"8am - 6pm\nExcept Sunday",3],
+
+	[4,"School Days\n7am - 4pm","Dept of\nEducation"],
+	[4,"Monday - Friday\n7am - 7pm","Administration\nfor Children's\nServices"],
+	[4,"7am - 7pm\nAll Days","Medical\nExaminer's\nOffice"]
     ];
 
     var x = Math.floor(Math.random()*sin.length);
     data.value = sin[x][1];
-    if(sin[x].length == 3) hours.value = sin[x][2];
+    if(sin[x][0] == 2 || sin[x][0] == 3) hours.value = sin[x][2];
+    else if(sin[x][0] == 4) auth.value = sin[x][2];
+    //if(sin[x].length == 3) hours.value = sin[x][2];
 
     if(sin[x][0] == -1) type.value = Math.floor((Math.random()*2));
     else type.value = sin[x][0];

@@ -50,6 +50,7 @@
 		  <option value="1">No Standing</option>
 		  <option value="2">Metered Parking</option>
 		  <option value="3">Commercial Vehicles</option>
+		  <option value="4">Authorized Vehicles</option>
 		</select>
 	      </td>
 	    </tr>
@@ -57,6 +58,14 @@
 	    <tr id="tr_metered" style="display:none;">
 	      <th>Hours</th>
 	      <td><input id="hours" size="2" maxlength="2" onkeyup="update()" value="2" /></td>
+	    </tr>
+
+	    <tr id="tr_authorized" style="display:none;">
+	      <th>Authorized<br />Vehicles</th>
+	      <td>
+		<textarea cols="20" rows="3" id="auth" onkeyup="update()">Dept of
+Education</textarea>
+	      </td>
 	    </tr>
 
 	    <tr>
