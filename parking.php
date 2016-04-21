@@ -1,6 +1,6 @@
 <?php
 $MIN_HEIGHT = 400;
-
+$min_height_offset = 0;
 
 /*
  * | denotes special line formatting when followed by one of these chars:
@@ -14,9 +14,12 @@ $height = 0;
 $data = explode('`',$_GET["data"]);
 
 for($x=0;$x<count($data);$x++){
-  if($data[$x] == "") $height += 35;
-  else {
-    if($data[$x][0] == '|' && $data[$x][1] == '~') $height += 85;
+  if($data[$x] == ""){
+    if($_GET["type"] == 5) $height += 20;
+    else $height += 35;
+  } else {
+    if($_GET["type"] == 5) $height += 60;
+    else if($data[$x][0] == '|' && $data[$x][1] == '~') $height += 85;
     else $height += 70;
   }   
 }
@@ -31,10 +34,13 @@ if($_GET["type"] == 2){ // Meter
 } else if($_GET["type"] == 4){ // Authorized
   $offsetY += 110;
   $height += 35;
+} else if($_GET["type"] == 5){ // alternate
+  $height -= 100;
+  $min_height_offset = 50;
 }
 
 
-if($height+260 < $MIN_HEIGHT) $height = $MIN_HEIGHT-260;
+if($height+260 < $MIN_HEIGHT-$min_height_offset) $height = $MIN_HEIGHT-$min_height_offset-260;
 $height += $offsetY;
 
 
@@ -117,6 +123,27 @@ else if($type == 4){ // AUTHORIZED VEHICLES ONLY
   $textcolor = $red;
 
 }
+else if($type == 5){ // ALTERNATE SIDE
+  imagefilledrectangle($im, 10, 10, 590, $height+250, $red);
+  imagefilledrectangle($im, 20, 20, 580, $height+240, $white);
+  //imagettftext($im, 40, 0, 220, 85, $red, $font, "Tuesday");
+  //imagettftext($im, 40, 0, 220, 145, $red, $font, "Friday");
+
+  //imagettftext($im, 40, 0, 220, 235, $red, $font, $data[0]);
+
+  imagefilledrectangle($im, 20, 20, 200, 190, $red);
+  imagefilledellipse($im, 105, 100, 150, 150, $white);
+  imagefilledellipse($im, 105, 100, 130, 130, $red);
+  imagettftext($im, 85, 0, 65, 135, $white, $font, "P");
+
+  imagesetthickness($im, 10);
+  imageline($im, 55, 50, 135, 130, $white);
+  imagesetthickness($im, 20);
+  imageline($im, 115, 150, 155, 110, $white);
+  imagesetthickness($im, 1);
+
+  $textcolor = $red;
+}
 else { // NO PARKING (default)
   imagefilledrectangle($im, 10, 10, 590, $height+250, $red);
   imagefilledrectangle($im, 20, 20, 580, $height+240, $white);
@@ -124,24 +151,35 @@ else { // NO PARKING (default)
   $textcolor = $red;
 }
 
-
-$y = 180+$offsetY;
-for($x=0;$x<count($data);$x++){
-  if($data[$x] == ""){
-    $y += 35;
+//if($type != 5){
+{
+  if($type == 5){
+    $y = 85;
+    $x = 220;
   } else {
-  
-    $font_size = 45;
-    if($data[$x][0] == '|' && $data[$x][1] == '~'){
-      $font_size = 60;
-      $data[$x] = substr($data[$x], 2);
-    }     
+    $y = 180+$offsetY;
+    $x = 35;
+  }
 
-    imagettftext($im, $font_size, 0, 35, $y, $textcolor, $font, $data[$x]);
-    $y += 35+$font_size;
+  for($i=0;$i<count($data);$i++){
+    if($data[$i] == ""){
+      if($type == 5) $y += 20;
+      else $y += 35;
+    } else {
+  
+      $font_size = 45;
+      if($type == 5) $font_size = 40;
+      else if($data[$i][0] == '|' && $data[$i][1] == '~'){
+        $font_size = 60;
+        $data[$i] = substr($data[$i], 2);
+      }     
+
+      imagettftext($im, $font_size, 0, $x, $y, $textcolor, $font, $data[$i]);
+      if($type == 5) $y += 60;
+      else $y += 35+$font_size;
+    }
   }
 }
-
 
 // arrow
 $hh = $height+190;

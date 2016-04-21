@@ -16,7 +16,9 @@ function update(){
     var d = data.value.replace(/\n/g,'`');
 
     if(type.value == 4){
-	d = "|~"+auth.value.replace(/\n/g,"`|~")+"``"+d;
+	add = "|~"+auth.value.replace(/\n/g,"`|~");
+	if(d) d = add+"``"+d;
+	else d = add;
     }
 
     var url = "parking.php?type="+type.value+"&arrow="+arrow.value+"&data="+d
@@ -47,6 +49,7 @@ function init(){
 
 	[2,"8:30am - 7pm\nExcept Sunday",1],
 	[2,"Monday - Friday\n6pm - Midnight\n\nSaturday\n8am - Midnight",6],
+	[2,"Monday - Friday\n10am - 7pm\n\nSaturday\n9am - 7pm",1],
 
 	[3,"Monday - Friday\n7am - 7pm",3],
 	[3,"Monday - Friday\n7am - 6pm",3],
@@ -56,7 +59,11 @@ function init(){
 
 	[4,"School Days\n7am - 4pm","Dept of\nEducation"],
 	[4,"Monday - Friday\n7am - 7pm","Administration\nfor Children's\nServices"],
-	[4,"7am - 7pm\nAll Days","Medical\nExaminer's\nOffice"]
+	[4,"7am - 7pm\nAll Days","Medical\nExaminer's\nOffice"],
+
+	[5,"Monday\nThursday\n\n9am - 10:30am"],
+	[5,"Tuesday\nFriday\n\n9am - 10:30am"],
+	[5,"8am - 8:30am\nExcept Sunday"]
     ];
 
     var x = Math.floor(Math.random()*sin.length);
