@@ -10,6 +10,18 @@ $min_height_offset = 0;
 
 
 
+
+$type = $_GET["type"];
+$arrow = $_GET["arrow"];
+$hours = $_GET["hours"];
+$night = $_GET["night"];
+
+if($night == 1){
+  $MIN_HEIGHT += 30;
+}
+
+
+
 $height = 0;
 $data = explode('`',$_GET["data"]);
 
@@ -18,11 +30,15 @@ for($x=0;$x<count($data);$x++){
     if($_GET["type"] == 5) $height += 20;
     else $height += 35;
   } else {
-    if($_GET["type"] == 5) $height += 60;
+    if($_GET["type"] == 5){
+       $height += 55;
+    }      
     else if($data[$x][0] == '|' && $data[$x][1] == '~') $height += 85;
     else $height += 70;
   }   
 }
+if($_GET["type"] == 5 && sizeof($data) > 4) $height -= 20;
+
 
 $offsetY = 0;
 if($_GET["type"] == 2){ // Meter
@@ -52,12 +68,17 @@ $im = imagecreatetruecolor(600, $height+260);
 
 // COLORS
 $white = imagecolorallocate($im, 255, 255, 255);
+$black = imagecolorallocate($im, 0, 0, 0);
 $red = imagecolorallocate($im, 148, 39, 45);
 $green = imagecolorallocate($im, 0, 130, 74);
 
-$type = $_GET["type"];
-$arrow = $_GET["arrow"];
-$hours = $_GET["hours"];
+
+// night image
+if($night == 1){
+  $night_image = imagecreatefrompng("./night.png");
+}
+
+
 
 // No parking sign
 imagefilledrectangle($im, 0, 0, 600, $height+260, $white);
@@ -134,13 +155,22 @@ else if($type == 5){ // ALTERNATE SIDE
   imagefilledrectangle($im, 20, 20, 200, 190, $red);
   imagefilledellipse($im, 105, 100, 150, 150, $white);
   imagefilledellipse($im, 105, 100, 130, 130, $red);
-  imagettftext($im, 85, 0, 65, 135, $white, $font, "P");
+  imagettftext($im, 85, 0, 70, 135, $white, $font, "P");
 
   imagesetthickness($im, 10);
-  imageline($im, 55, 50, 135, 130, $white);
-  imagesetthickness($im, 20);
-  imageline($im, 115, 150, 155, 110, $white);
+  imageline($im, 60, 50, 135, 125, $white);
   imagesetthickness($im, 1);
+
+  $points = array(110,145,  120,155,  160,105,  150,95);
+  imagefilledpolygon($im, $points, 4, $white);
+
+
+  // night
+  if($night == 1){
+    imagecopy($im, $night_image, 20, 190, 0, 0, 181, 171);
+  //    imagefilledrectangle($im, 20, 190, 200, $height+240, $black);  
+  } 
+
 
   $textcolor = $red;
 }
@@ -155,6 +185,7 @@ else { // NO PARKING (default)
 {
   if($type == 5){
     $y = 85;
+    if(sizeof($data) > 4) $y = 65;
     $x = 220;
   } else {
     $y = 180+$offsetY;
@@ -175,7 +206,7 @@ else { // NO PARKING (default)
       }     
 
       imagettftext($im, $font_size, 0, $x, $y, $textcolor, $font, $data[$i]);
-      if($type == 5) $y += 60;
+      if($type == 5) $y += 55;
       else $y += 35+$font_size;
     }
   }
@@ -183,9 +214,13 @@ else { // NO PARKING (default)
 
 // arrow
 $hh = $height+190;
-imagefilledrectangle($im, 50, $hh-10, 400, $hh+10, $textcolor);
-if($arrow != 2) imagefilledpolygon($im, array(35,$hh, 80,$hh+30, 80,$hh-30), 3, $textcolor); // arrow left
-if($arrow != 1) imagefilledpolygon($im, array(420,$hh, 375,$hh+30, 375,$hh-30), 3, $textcolor); // arrow right
+
+$left = 0;
+if($night) $left = 180;
+
+imagefilledrectangle($im, $left+50, $hh-10, 420, $hh+10, $textcolor);
+if($arrow != 2) imagefilledpolygon($im, array($left+35,$hh, $left+80,$hh+30, $left+80,$hh-30), 3, $textcolor); // arrow left
+if($arrow != 1) imagefilledpolygon($im, array(440,$hh, 395,$hh+30, 395,$hh-30), 3, $textcolor); // arrow right
 
 
 

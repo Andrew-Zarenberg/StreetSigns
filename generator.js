@@ -8,9 +8,11 @@ var type = document.getElementById("type");
 var arrow = document.getElementById("arrow");
 var hours = document.getElementById("hours");
 var auth = document.getElementById("auth");
+var night = document.getElementById("night");
 
 var tr_metered = document.getElementById("tr_metered");
 var tr_authorized = document.getElementById("tr_authorized");
+var tr_night = document.getElementById("tr_night");
 
 function update(){
     var d = data.value.replace(/\n/g,'`');
@@ -23,11 +25,13 @@ function update(){
 
     var url = "parking.php?type="+type.value+"&arrow="+arrow.value+"&data="+d
     if(type.value == 2 || type.value == 3) url += "&hours="+hours.value;
+    if(night.checked) url += "&night=1";
     img.src = url;
     link.href = url;
 
     tr_metered.style.display = (type.value==2||type.value==3?"":"none");
     tr_authorized.style.display = (type.value==4?"":"none");
+    tr_night.style.display = (type.value==5?"":"none");
 }
 
 
